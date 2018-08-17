@@ -1,2 +1,2 @@
-# GoChess
-Chess terminal game made in GoLang
+# CChess
+Chess terminal game made in C
