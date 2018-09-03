@@ -11,27 +11,26 @@
 #define QUEEN  4
 #define KING   5
 
-typedef struct vec2  vec2;
-typedef struct board board;
+struct vec2;
+struct move;
+struct board;
 
-typedef struct piece {
+struct piece {
 	vec2 pos;
-	char team, type;
-} piece;
+	char team, type, hasMoved;
+};
 
-piece make_piece (int,int,int,int);
+struct piece make_piece (int,int,int,int);
 
 // movement functions (return arrays)
-int moves_pawn   (board*, piece, vec2[]);
-int moves_rook   (board*, piece, vec2[]);
-int moves_knight (board*, piece, vec2[]);
-int moves_bishop (board*, piece, vec2[]);
-int moves_queen  (board*, piece, vec2[]);
-int moves_king   (board*, piece, vec2[]);
+int moves_pawn   (struct board*, struct piece, struct move[]);
+int moves_rook   (struct board*, struct piece, struct move[]);
+int moves_knight (struct board*, struct piece, struct move[]);
+int moves_bishop (struct board*, struct piece, struct move[]);
+int moves_queen  (struct board*, struct piece, struct move[]);
+int moves_king   (struct board*, struct piece, struct move[]);
 
-int moves_leaper (board*, vec2, char, int, vec2[], int, vec2[]);
-int moves_rider  (board*, vec2, char, int, vec2[], int, vec2[]);
-
-piece invalid_piece ();
+struct piece no_piece ();
+char is_free(struct piece);
 
 #endif /* PIECE_H_ */

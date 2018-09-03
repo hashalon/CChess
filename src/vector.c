@@ -1,5 +1,8 @@
 #include "vector.h"
 
+// type definitions
+typedef struct vec2 vec2;
+
 vec2 vector (int x, int y) {
 	vec2 r = {x, y}; return r;
 }
@@ -35,4 +38,7 @@ char equ (vec2 u, vec2 v) {
 
 vec2 invalid_vector () {
 	vec2 r = {-128, -128}; return r;
+}
+char is_free(vec2 v) {
+	return v.x == -128 && v.y == -128;
 }

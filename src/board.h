@@ -5,22 +5,23 @@
 #define MAX_PIECES 32
 #define NB_CELLS   64
 
-typedef struct vec2  vec2;
-typedef struct piece piece;
+struct vec2;
+struct piece;
+struct move;
 
-typedef struct board {
-	char nb_pieces;
-	piece pieces[MAX_PIECES];
-} board;
+struct board {
+	char          nb_pieces;
+	struct piece  pieces[MAX_PIECES];
+	struct move * prevLong;
+};
 
-board* make_board ();
+struct board * make_board ();
+struct board * clone(struct board*);
 
-char valid  (vec2);
-
-int  find   (board*, vec2);
-char remove (board*, vec2);
-char move   (board*, vec2, vec2);
-
-int get_moves (board*, char, vec2, vec2[]);
+char         valid     (struct vec2);
+struct piece find      (struct board*, struct vec2);
+char         remove    (struct board*, struct vec2);
+void         move_     (struct board*, struct piece, struct move);
+int          get_moves (struct board*, struct piece, struct move[]);
 
 #endif /* BOARD_H_ */

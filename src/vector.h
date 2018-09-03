@@ -2,22 +2,23 @@
 #define VECTOR_H_
 
 // vec2 position or direction in 2D board
-typedef struct vec2 {
+struct vec2 {
 	char x, y;
-} vec2;
+};
 
 //typedef unsigned short ID;
 
-vec2 vector (int, int);
+struct vec2 vector (int, int);
 
-vec2 inv (vec2);
-vec2 add (vec2, vec2);
-vec2 mul (vec2, char);
-vec2 rot (vec2, char);
-char equ (vec2, vec2);
+struct vec2 inv (struct vec2);
+struct vec2 add (struct vec2, struct vec2);
+struct vec2 mul (struct vec2, char);
+struct vec2 rot (struct vec2, char);
+char        equ (struct vec2, struct vec2);
 
 //ID id (vec2);
 
-vec2 invalid_vector ();
+struct vec2 invalid_vector ();
+char is_free(struct vec2);
 
 #endif /* VECTOR_H_ */
