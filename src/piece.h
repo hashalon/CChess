@@ -11,26 +11,27 @@
 #define QUEEN  4
 #define KING   5
 
-struct vec2;
+
+#include "vector.h"
 struct move;
 struct board;
 
 struct piece {
-	vec2 pos;
+	struct vec2 pos;
 	char team, type, hasMoved;
 };
 
 struct piece make_piece (int,int,int,int);
 
 // movement functions (return arrays)
-int moves_pawn   (struct board*, struct piece, struct move[]);
-int moves_rook   (struct board*, struct piece, struct move[]);
-int moves_knight (struct board*, struct piece, struct move[]);
-int moves_bishop (struct board*, struct piece, struct move[]);
-int moves_queen  (struct board*, struct piece, struct move[]);
-int moves_king   (struct board*, struct piece, struct move[]);
+int moves_pawn   (struct board*, struct piece, struct move*);
+int moves_rook   (struct board*, struct piece, struct move*);
+int moves_knight (struct board*, struct piece, struct move*);
+int moves_bishop (struct board*, struct piece, struct move*);
+int moves_queen  (struct board*, struct piece, struct move*);
+int moves_king   (struct board*, struct piece, struct move*);
 
 struct piece no_piece ();
-char is_free(struct piece);
+char is_free_piece(struct piece);
 
 #endif /* PIECE_H_ */

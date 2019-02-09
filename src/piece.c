@@ -2,6 +2,7 @@
 
 #include "macro.h"
 #include "vector.h"
+#include "move.h"
 #include "board.h"
 
 #define D4 4
@@ -41,7 +42,7 @@ piece make_piece (int x, int y, int team, int type) {
 	return p;
 }
 
-int moves_pawn   (board*b, piece p, vec2 o[SET]) {
+int moves_pawn (board*b, piece p, move o[SET]) {
 	int  s = 0;
 	char f = p.team ? -1 : 1; // define forward based on team
 
@@ -52,12 +53,12 @@ int moves_pawn   (board*b, piece p, vec2 o[SET]) {
 
 	// no piece forward !
 	piece target = find(b, posf);
-	if (is_free(target)) {
+	if (is_free_piece(target)) {
 		s = add_to_set(posf, target, s, o);
 
 		// test long move
 		target = find(b, posF);
-		if (!p.hasMoved && is_free(target)) {
+		if (!p.hasMoved && is_free_piece(target)) {
 			move L = make_longmove(posF);
 			o[s++] = L;
 		}
@@ -103,7 +104,7 @@ piece no_piece () {
 	piece p = {invalid_vector(), -1, -1};
 	return p;
 }
-char is_free(piece p) {
+char is_free_piece(piece p) {
 	return is_free(p.pos)
 			|| (p.team < WHITE || BLACK < p.team)
 			|| (p.type < PAWN  || KING  < p.type);
@@ -133,7 +134,7 @@ static int moves_leaper (
 			piece target = find(board, pos2);
 
 			// no other piece at location or enemy piece
-			if (is_free(target) || target.team != team)
+			if (is_free_piece(target) || target.team != team)
 				so = add_to_set(pos2, target, so, out);
 		}
 	}
@@ -155,7 +156,7 @@ static int moves_rider (
 			piece target = find(board, pos2);
 
 			// no other piece at location or enemy piece
-			if (is_free(target))
+			if (is_free_piece(target))
 				so = add_to_set(pos2, target, so, out);
 			else if (target.team != team) {
 				so = add_to_set(pos2, target, so, out);
@@ -179,10 +180,10 @@ static int add_to_set(vec2 pos, piece target, int size, move out[SET]) {
 static int pawn_side_move (board * b, piece pawn, vec2 pos, int s, vec2 out[SET]) {
 
 	piece target = find(b, pos);
-	if (!valid(pos)) continue;
+	if (!valid(pos)) return s;
 
 	// try capture on the side
-	if (!is_free(target)) {
+	if (!is_free_piece(target)) {
 		if (target.team != pawn.team)
 			s = add_to_set(pos, target, s, out);
 	} else if (b->prevLong != NULL && equ(b->prevLong->dest, pos)) // en passant
@@ -193,27 +194,27 @@ static int pawn_side_move (board * b, piece pawn, vec2 pos, int s, vec2 out[SET]
 static int king_castling  (board * b, piece king, char side, int s, vec2 out[SET]) {
 	char y = king.team ? 7 : 0;
 	char x = side      ? 7 : 0;
-	vec2 rook_pos = make_vector(0, y);
+	vec2 rook_pos = {0, y};
 
 	piece rook = find(b, rook_pos);
-	if (is_free(rook) || rook.team != king.team || rook.hasMoved) return s;
+	if (is_free_piece(rook) || rook.team != king.team || rook.hasMoved) return s;
 
 	// test positions between king and rook
 	// all cells must be free between them
-	char poss [] = side ? P_right : P_left;
-	int  nb      = side ? P_R     : P_L;
+	char * poss = side ? P_right : P_left;
+	int  nb     = side ? P_R     : P_L;
 	for (int i=0; i < nb; ++i) {
-		vec2  pos  = make_vector(poss[i], y);
-		piece cell = find(b, cell);
-		if (!is_free(cell)) return s;
+		vec2  pos  = {poss[i], y};
+		piece cell = find(b, cell.pos);
+		if (!is_free_piece(cell)) return s;
 	}
 
 	// all cells are free => add castling
 	vec2
-		dest1 = make_vector(side ? 6 : 2, y),
-		dest2 = make_vector(side ? 5 : 3, y);
+		dest1 = {side ? 6 : 2, y},
+		dest2 = {side ? 5 : 3, y};
 	move m = make_castling(dest1, dest2, rook);
-	out[s++] = m;
+	out[s++] = m.dest;
 
 	return s;
 }

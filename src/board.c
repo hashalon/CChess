@@ -20,7 +20,7 @@ board * make_board () {
 	board * b = malloc(sizeof(board));
 
 	// order of pieces
-	int o = {ROOK,KNIGHT,BISHOP,QUEEN,KING,BISHOP,KNIGHT,ROOK};
+	int o[] = {ROOK,KNIGHT,BISHOP,QUEEN,KING,BISHOP,KNIGHT,ROOK};
 
 	// fill both row with pawns
 	for (int i = 0, j = 0; i < SIZE; ++i) {
@@ -115,7 +115,7 @@ static int find_index (board * b, vec2 p) {
 }
 
 static void move_piece (board * b, piece p, vec2 d) {
-	int i = find_index(b, p);
+	int i = find_index(b, d);
 	if (i < 0) return;
 
 	p.pos      = d;

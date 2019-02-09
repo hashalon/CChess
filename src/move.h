@@ -1,8 +1,8 @@
 #ifndef MOVE_H_
 #define MOVE_H_
 
-struct vec2;
-struct piece;
+#include "vector.h"
+#include "piece.h"
 
 struct move {
 	struct vec2   dest;   // destination of the move

@@ -1,23 +1,17 @@
 /*
  ============================================================================
- Name        : Chess.c
+ Name        : CChess.c
  Author      : Olivier Schyns
  Version     :
- Copyright   : no copyrights
- Description : Hello World in C, Ansi-style
+ Copyright   : MIT
+ Description : Chess game made in C
  ============================================================================
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 
-// type definitions
-typedef struct vec2  vec2;
-typedef struct piece piece;
-typedef struct move  move;
-typedef struct board board;
-
 int main(void) {
-	puts("Chess"); /* prints Chess */
+	puts("CChess"); /* prints !!!Hello World!!! */
 	return EXIT_SUCCESS;
 }
