@@ -3,6 +3,7 @@
 #include "macro.h"
 #include "vector.h"
 #include "piece.h"
+#include "move.h"
 
 typedef struct vec2  vec2;
 typedef struct piece piece;
@@ -10,8 +11,8 @@ typedef struct move  move;
 typedef struct board board;
 
 // encapsulated
-static int  find_index (board*, vec2);
-static void move_piece (board*, piece, vec2);
+static int  find_index     (board*, vec2);
+static void displace_piece (board*, piece, vec2);
 
 board * make_board () {
 
@@ -30,101 +31,96 @@ board * make_board () {
 		b->pieces[j++] = make_piece(i,7,BLACK,o[i]);
 	}
 	b->nb_pieces = MAX_PIECES;
-	b->prevLong  = NULL;
+	b->prev_long = null_holder();
 
 	return b;
 }
 
-board * clone(board * b) {
+board * clone(board * board0) {
 
 	// copy content of board into an new one
-	board * c = malloc(sizeof(board));
-	for (int i=0; i < b->nb_pieces; ++i) {
-		c->pieces[i] = b->pieces[i];
+	board * board1 = malloc(sizeof(board));
+	for (int i=0; i < board0->nb_pieces; ++i) {
+		board1->pieces[i] = board0->pieces[i];
 	}
-	c->nb_pieces = b->nb_pieces;
-	c->prevLong  = NULL;
-	return c;
+	board1->nb_pieces = board0->nb_pieces;
+	board1->prev_long = board0->prev_long;
+	return board1;
 }
 
-char valid (vec2 p) {
-	return 0 <= p.x && p.x < SIZE && 0 <= p.y && p.y < SIZE;
+piece find (board * board, vec2 pos) {
+	int i = find_index(board, pos);
+	if (i < 0) return null_piece(); // failed to find
+	return board->pieces[i];
 }
 
-piece find (board * b, vec2 p) {
-	int i = find_index(b, p);
-	if (i < 0) return no_piece(); // failed to find
-	return b->pieces[i];
+char is_valid (vec2 pos) {
+	return 0 <= pos.x && pos.x < SIZE && 0 <= pos.y && pos.y < SIZE;
 }
 
-char remove (board * b, vec2 p) {
-	int i = find_index(b, p);
+char remove_piece (board * board, vec2 pos) {
+	int i = find_index(board, pos);
 	if (i < 0) return NO; // failed to remove
 
 	// take last piece and overwrite at index found and reduce array size
-	b->pieces[i] = b->pieces[--b->nb_pieces];
+	board->pieces[i] = board->pieces[ --board->nb_pieces ];
 	return YES;
 }
 
-void move_ (board * b, piece p, move m) {
-	// remove target
-	remove(b, m.target.pos);
-
-	// move current piece
-	move_piece(b, p, m.dest);
-	free(b->prevLong); // delete previous long move
-
-	// if long move, store info in the board
-	if (m.isLong)
-		b->prevLong = make_holder(m.dest, p);
-
-	// if castling
-	else if (m.ext != NULL) {
-		move e = *(m.ext);
-		move_piece(b, e.target, e.dest);
-	}
-}
-
-int get_moves (board * b, char t, vec2 p, vec2 o[NB_CELLS]) {
-	int i = find_index(b, p);
+/*
+int get_moves (board * board, char team, vec2 pos, move * out) {
+	int i = find_index(board, pos);
 	if (i < 0) return -1; // failed to find piece
 
 	// check that the piece is of the correct team
-	piece q = b->pieces[i];
-	if (t != q.team) return -2; // incorrect team
+	piece piece = board->pieces[i];
+	if (team != piece.team) return -2; // incorrect team
 
-	// test type of piece to find possible moves
-	switch (q.type) {
-	case PAWN   : return moves_pawn  (b, q, o);
-	case ROOK   : return moves_rook  (b, q, o);
-	case KNIGHT : return moves_knight(b, q, o);
-	case BISHOP : return moves_bishop(b, q, o);
-	case QUEEN  : return moves_queen (b, q, o);
-	case KING   : return moves_king  (b, q, o);
+	// TODO...
+} // */
+
+void move_piece (board * board, piece piece, move move) {
+	// remove target
+	remove_piece(board, move.target.pos);
+
+	// move current piece
+	displace_piece(board, piece, move.dest);
+
+	// if long move, store info in the board
+	if (move.isLong) {
+		board->prev_long = make_holder(move.dest, piece);
 	}
-	return -3; // invalid type
+	// if castling
+	else if (move.ext != NULL) {
+		displace_piece(board, move.ext->target, move.ext->dest);
+	}
 }
 
+void draw_board (board * b) {
 
-static int find_index (board * b, vec2 p) {
-	for (int i = 0; i < b->nb_pieces; ++i) {
-		if (equ(b->pieces[i].pos, p))
+}
+
+/* PRIVATE FUNCTIONS */
+
+static int find_index (board * board, vec2 pos) {
+	for (int i = 0; i < board->nb_pieces; ++i) {
+		if (equ(board->pieces[i].pos, pos))
 			return i;
 	}
 	return -1; // failed to find
 }
 
-static void move_piece (board * b, piece p, vec2 d) {
-	int i = find_index(b, d);
+static void displace_piece (board * board, piece piece, vec2 dest) {
+	int i = find_index(board, dest);
 	if (i < 0) return;
 
-	p.pos      = d;
-	p.hasMoved = YES;
-	b->pieces[i] = p;
+	piece.pos      = dest;
+	piece.hasMoved = YES;
+	board->pieces[i] = piece;
 }
 
 
-char move_pos (board * b, vec2 p, vec2 d) {
+/*char move_pos (board * b, vec2 p, vec2 d) {
 	int i = find_index(b, p);
 	if (i < 0) return NO; // failed to move
 
@@ -137,4 +133,4 @@ char move_pos (board * b, vec2 p, vec2 d) {
 	q.hasMoved = YES;
 	b->pieces[i] = q;
 	return YES;
-}
+}*/

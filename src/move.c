@@ -11,12 +11,12 @@ typedef struct move  move;
 typedef struct board board;
 
 move make_move (vec2 dest, piece attacked) {
-	move m = {dest, attacked, NULL, NO};
-	return m;
+	move move = {dest, attacked, NULL, NO};
+	return move;
 }
 move make_longmove (vec2 dest) {
-	move m = {dest, no_piece(), NULL, YES};
-	return m;
+	move move = {dest, null_piece(), NULL, YES};
+	return move;
 }
 move make_castling (vec2 dest1, vec2 dest2, piece rook) {
 	move
@@ -24,21 +24,30 @@ move make_castling (vec2 dest1, vec2 dest2, piece rook) {
 		*c1 = malloc(sizeof(move));
 	*c1 = c0;
 
-	move m = {dest1, no_piece(), c1, NO};
-	return m;
+	move move = {dest1, null_piece(), c1, NO};
+	return move;
 }
 
-// generate a holder for board's "prevLong"
-move * make_holder (vec2 dest, piece pawn) {
+// generate a holder for board's "prev_long"
+move make_holder (vec2 dest, piece pawn) {
 	if (pawn.team) ++dest.y;
 	else           --dest.y;
 
-	move
-		 h0 = {dest, pawn, NULL, YES},
-		*h1 = malloc(sizeof(move));
-	*h1 = h0;
-
-	return h1;
+	move holder = {dest, pawn, NULL, YES};
+	return holder;
 }
 
-//void delete_move (move m) {free(m.castling);}
+move null_holder () {
+	move holder = {null_vector(), null_piece(), NULL, NO};
+	return holder;
+}
+
+char is_null_holder (move holder) {
+	return
+		is_null_vector(holder.dest  ) ||
+		is_null_piece (holder.target);
+}
+
+void del_move (move move) {
+	free(move.ext);
+}

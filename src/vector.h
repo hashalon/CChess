@@ -8,7 +8,7 @@ struct vec2 {
 
 //typedef unsigned short ID;
 
-struct vec2 vector (int, int);
+struct vec2 make_vector (int, int);
 
 struct vec2 inv (struct vec2);
 struct vec2 add (struct vec2, struct vec2);
@@ -18,7 +18,7 @@ char        equ (struct vec2, struct vec2);
 
 //ID id (vec2);
 
-struct vec2 invalid_vector ();
-char is_free(struct vec2);
+struct vec2 null_vector ();
+char is_null_vector(struct vec2);
 
 #endif /* VECTOR_H_ */

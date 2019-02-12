@@ -16,22 +16,21 @@
 struct move;
 struct board;
 
+// data of a piece
 struct piece {
 	struct vec2 pos;
 	char team, type, hasMoved;
 };
 
+// helper to build a piece
 struct piece make_piece (int,int,int,int);
 
-// movement functions (return arrays)
-int moves_pawn   (struct board*, struct piece, struct move*);
-int moves_rook   (struct board*, struct piece, struct move*);
-int moves_knight (struct board*, struct piece, struct move*);
-int moves_bishop (struct board*, struct piece, struct move*);
-int moves_queen  (struct board*, struct piece, struct move*);
-int moves_king   (struct board*, struct piece, struct move*);
+// get possible moves for the given piece
+int get_moves (struct board*, struct piece, struct move*);
 
-struct piece no_piece ();
-char is_free_piece(struct piece);
+// invalid piece are used to specify that
+// no piece was found at a given location
+struct piece null_piece ();
+char is_null_piece(struct piece);
 
 #endif /* PIECE_H_ */
