@@ -1,3 +1,7 @@
+/*
+ * Author: olivier
+ */
+
 #ifndef PIECE_H_
 #define PIECE_H_
 
@@ -32,5 +36,7 @@ int get_moves (struct board*, struct piece, struct move*);
 // no piece was found at a given location
 struct piece null_piece ();
 char is_null_piece(struct piece);
+
+char get_visual(struct piece);
 
 #endif /* PIECE_H_ */

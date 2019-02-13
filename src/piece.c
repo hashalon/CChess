@@ -1,3 +1,7 @@
+/*
+ * Author: olivier
+ */
+
 #include "piece.h"
 
 #include "macro.h"
@@ -76,6 +80,23 @@ char is_null_piece(piece piece) {
 			|| (piece.type < PAWN  || KING  < piece.type);
 }
 
+char get_visual (piece piece) {
+	char o = 'A';
+
+	switch (piece.type) {
+	case PAWN:   o = 'P'; break;
+	case ROOK:   o = 'R'; break;
+	case KNIGHT: o = 'K'; break;
+	case BISHOP: o = 'B'; break;
+	case QUEEN:  o = 'Q'; break;
+	case KING:   o = 'K'; break;
+	}
+
+	// if team white, use lower case
+	if (piece.team == WHITE) o += 32;
+	return o;
+}
+
 /* PRIVATE FUNCTIONS */
 
 static int get_moves_pawn (board * board, piece piece, move * out) {
@@ -130,9 +151,11 @@ static int get_pawn_side_move (
 			size = add_to_set(dest, target, out, size);
 	}
 	// try en passant capture
-	else if (!is_null_holder(board->prev_long) && equ(board->prev_long.dest, dest)) {
+	else if (
+		was_long_move(board) &&
+		equ(board->pos_jumped, dest)
+	)
 		size = add_to_set(dest, target, out, size);
-	}
 
 	return size;
 }

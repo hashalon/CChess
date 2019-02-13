@@ -16,6 +16,7 @@
 #include "piece.h"
 #include "move.h"
 #include "board.h"
+#include "game.h"
 
 typedef struct vec2  vec2;
 typedef struct piece piece;
@@ -23,13 +24,17 @@ typedef struct move  move;
 typedef struct board board;
 
 int main(void) {
+	printf("=== CCHESS ===\n\n\n");
+
 	// start with white and prepare a new board
-	char    team  = WHITE;
+	char player = WHITE, state = NEXT_TURN;
 	board * board = make_board();
-	printf("start the game\n");
+
+	while (state == NEXT_TURN) {
+		state = draw_turn(board, player);
+	}
 
 	// clear the board
 	free(board);
-	printf("finish the game\n");
 	return EXIT_SUCCESS;
 }

@@ -1,3 +1,7 @@
+/*
+ * Author: olivier
+ */
+
 #ifndef MOVE_H_
 #define MOVE_H_
 
@@ -17,14 +21,13 @@ struct move make_move     (struct vec2, struct piece);
 struct move make_longmove (struct vec2);
 struct move make_castling (struct vec2, struct vec2, struct piece);
 
-// generate a data holder to store in the "prev_long" variable of a board
-struct move make_holder (struct vec2, struct piece);
-struct move null_holder ();
+struct move null_move();
+char is_null_move(struct move);
 
-// check if anything has been stored in "prev_long"
-char is_null_holder (struct move);
+// create an empty move set to fill
+struct move* make_move_set();
 
-// to delete a move properly, we have to free the "ext" pointer
-void del_move (struct move);
+// delete a whole move set
+void delete_moveset (struct move*);
 
 #endif /* MOVE_H_ */

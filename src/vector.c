@@ -1,3 +1,7 @@
+/*
+ * Author: olivier
+ */
+
 #include "vector.h"
 
 // type definitions
@@ -6,6 +10,7 @@ typedef struct vec2 vec2;
 vec2 make_vector (int x, int y) {
 	vec2 o = {x, y}; return o;
 }
+
 
 vec2 inv (vec2 v) {
 	vec2 o = {-v.x, -v.y}; return o;
@@ -31,9 +36,15 @@ char equ (vec2 u, vec2 v) {
 	return u.x == v.x && u.y == v.y;
 }
 
+
 vec2 null_vector () {
 	vec2 o = {-128, -128}; return o;
 }
 char is_null_vector(vec2 v) {
 	return v.x == -128 && v.y == -128;
+}
+
+
+char is_even(vec2 v) {
+	return v.x % 2 == v.y % 2;
 }
